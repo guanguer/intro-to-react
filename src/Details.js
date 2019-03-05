@@ -47,6 +47,7 @@ class Details extends React.Component {
       return <h1>loading...</h1>;
     }
     const {
+      name,
       animal,
       breed,
       location,
