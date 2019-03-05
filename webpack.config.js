@@ -35,7 +35,7 @@ const config = {
       {
         test: /\.(js|jsx)?$/,
         loader: "babel-loader",
-        exclude: /node_modules/
+        exclude: [path.resolve(__dirname, "src/__test__")]
       },
       {
         test: /\.css$/,
@@ -51,7 +51,7 @@ const config = {
     new CopyWebpackPlugin([
       {
         from: "src",
-        ignore: ["*.jsx", "*.js", "*.css"]
+        ignore: ["*.jsx", "*.js", "*.css", "__test__/**/*"]
       }
     ]),
     new Dotenv()
