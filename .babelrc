@@ -12,6 +12,10 @@
       }
     ]
   ],
+  "plugins": [
+    "babel-plugin-syntax-dynamic-import",
+    "babel-plugin-dynamic-import-webpack"
+  ],
   "env": {
     "development": {
       "plugins": [
