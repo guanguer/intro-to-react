@@ -3,11 +3,18 @@ import { render } from "react-dom";
 import { Router } from "@reach/router";
 import { Provider } from "./SearchContext";
 import { petfinder } from "./config";
+import Loadable from "react-loadable";
 import Results from "./Results";
-import Details from "./Details";
 import SearchParams from "./SearchParams";
 import NavBar from "./NavBar";
 import "./main.css";
+
+const LoadableDetails = Loadable({
+  loader: () => import("./Details"),
+  loading() {
+    return <h1>Loading...</h1>;
+  }
+});
 
 class App extends React.Component {
   constructor(props) {
@@ -80,7 +87,7 @@ class App extends React.Component {
         <Provider value={this.state}>
           <Router>
             <Results path="/" />
-            <Details path="/details/:id" />
+            <LoadableDetails path="/details/:id" />
             <SearchParams path="/search-params" />
           </Router>
         </Provider>

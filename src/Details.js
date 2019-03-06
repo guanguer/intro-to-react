@@ -1,7 +1,15 @@
 import React from "react";
+import Loadable from "react-loadable";
 import { petfinder } from "./config";
 import Carousel from "./Carousel";
 import Modal from "./Modal";
+
+const LoadableContent = Loadable({
+  loader: () => import("./AdoptModalContent"),
+  loading() {
+    return <h1>Loading...</h1>;
+  }
+});
 
 class Details extends React.Component {
   state = {
@@ -67,11 +75,7 @@ class Details extends React.Component {
           <p>{description}</p>
           {showModal ? (
             <Modal>
-              <h1>Would you like to adopt {name}</h1>
-              <div className="buttons">
-                <button onClick={this.toggleModal}>Yes</button>
-                <button onClick={this.toggleModal}>Definitely Yes!</button>
-              </div>
+              <LoadableContent toggleModal={this.toggleModal} name={name} />
             </Modal>
           ) : null}
         </div>
