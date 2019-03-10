@@ -5,13 +5,12 @@ const Dotenv = require("dotenv-webpack");
 
 const config = {
   context: __dirname,
-  entry: ["./src/App.js"],
+  entry: ["./src/ClientApp.js"],
   output: {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js",
     publicPath: "/"
   },
-  devtool: "cheap-eval-source-map",
   devServer: {
     historyApiFallback: true,
     port: 9000
@@ -27,15 +26,9 @@ const config = {
   module: {
     rules: [
       {
-        enforce: "pre",
-        test: /\.jsx?$/,
-        loader: "eslint-loader",
-        exclude: /node_modules/
-      },
-      {
         test: /\.(js|jsx)?$/,
         loader: "babel-loader",
-        exclude: [path.resolve(__dirname, "src/__test__")]
+        exclude: [path.resolve(__dirname, "src/__tests__")]
       },
       {
         test: /\.css$/,
@@ -51,11 +44,15 @@ const config = {
     new CopyWebpackPlugin([
       {
         from: "src",
-        ignore: ["*.jsx", "*.js", "*.css", "__test__/**/*"]
+        ignore: ["*.jsx", "*.js", "*.css", "__tests__/**/*"]
       }
     ]),
     new Dotenv()
   ]
 };
+
+if (process.env.NODE_ENV === "development") {
+  config.devtool = "cheap-eval-source-map";
+}
 
 module.exports = config;
