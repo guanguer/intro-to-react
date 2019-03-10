@@ -14,9 +14,16 @@
   ],
   "plugins": [
     "babel-plugin-syntax-dynamic-import",
-    "babel-plugin-dynamic-import-webpack"
+    "babel-plugin-dynamic-import-webpack",
+    "babel-plugin-transform-class-properties"
   ],
   "env": {
+    "production": {
+      "plugins": [
+        "transform-es2015-modules-commonjs",
+        "transform-class-properties"
+      ]
+    },
     "development": {
       "plugins": [
         "transform-es2015-modules-commonjs",
