@@ -1,11 +1,27 @@
 import React from "react";
-import { connect } from "react-redux";
+import { connect, DispatchProp } from "react-redux";
+import { RouteComponentProps } from "@reach/router";
+import { Pet as PetType, PetFindResponse } from "petfinder-client";
 import { petfinder } from "./config";
 import Pet from "./Pet";
 import SearchBox from "./SearchBox";
+import { State } from "./reducers";
 
-class Results extends React.Component {
-  constructor(props) {
+interface StateProps {
+  city: string;
+  animal: string;
+  breed: string;
+}
+
+interface LocalState {
+  pets: PetType[];
+  error: any;
+}
+
+type Props = StateProps & RouteComponentProps;
+
+class Results extends React.Component<Props, LocalState> {
+  constructor(props: Props & RouteComponentProps) {
     super(props);
     this.state = {
       pets: [],
@@ -13,20 +29,20 @@ class Results extends React.Component {
     };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this.search();
   }
 
-  search = () => {
+  public search = () => {
     petfinder.pet
       .find({
         output: "full",
-        location: this.props.location,
+        location: this.props.city,
         animal: this.props.animal,
         breed: this.props.breed
       })
-      .then(data => {
-        let pets;
+      .then((data: PetFindResponse) => {
+        let pets: PetType[];
         if (data.petfinder.pets && data.petfinder.pets.pet) {
           if (Array.isArray(data.petfinder.pets.pet)) {
             pets = data.petfinder.pets.pet;
@@ -47,7 +63,7 @@ class Results extends React.Component {
       });
   };
 
-  render() {
+  public render() {
     return (
       <div className="search">
         <SearchBox search={this.search} />
@@ -63,7 +79,7 @@ class Results extends React.Component {
               name={pet.name}
               breed={breed}
               media={pet.media}
-              location={`${pet.contact.city}, ${pet.contact.state}`}
+              city={`${pet.contact.city}, ${pet.contact.state}`}
             />
           );
         })}
@@ -72,8 +88,12 @@ class Results extends React.Component {
   }
 }
 
-const mapStateToProps = ({ location, breed, animal }) => ({
-  location,
+const mapStateToProps: (state: State) => StateProps = ({
+  city,
+  breed,
+  animal
+}) => ({
+  city,
   breed,
   animal
 });

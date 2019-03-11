@@ -1,8 +1,21 @@
 import React from "react";
 import Loadable from "react-loadable";
+import { RouteComponentProps, navigate } from "@reach/router";
+import { PetMedia, PetResponse, Pet } from "petfinder-client";
 import { petfinder } from "./config";
 import Carousel from "./Carousel";
 import Modal from "./Modal";
+
+interface State {
+  loading: boolean;
+  showModal: boolean;
+  name: string;
+  animal: string;
+  breed: string;
+  location: string;
+  description: string;
+  media: PetMedia;
+}
 
 const LoadableContent = Loadable({
   loader: () => import("./AdoptModalContent"),
@@ -11,24 +24,38 @@ const LoadableContent = Loadable({
   }
 });
 
-class Details extends React.Component {
-  state = {
+class Details extends React.Component<RouteComponentProps<{ id: string }>> {
+  public state: State = {
     loading: true,
-    showModal: false
+    showModal: false,
+    name: "",
+    animal: "",
+    location: "",
+    description: "",
+    media: {} as PetMedia,
+    breed: ""
   };
 
-  toggleModal = () => this.setState({ showModal: !this.state.showModal });
+  public toggleModal = () =>
+    this.setState({ showModal: !this.state.showModal });
 
-  componentDidMount() {
+  public componentDidMount() {
+    if (!this.props.id) {
+      return;
+    }
     petfinder.pet
       .get({
         output: "full",
         id: this.props.id
       })
-      .then(data => {
-        const pet = data.petfinder.pet;
+      .then((data: PetResponse) => {
+        if (!data.petfinder.pet) {
+          navigate("/");
+          return;
+        }
+        const pet: Pet = data.petfinder.pet;
         let breed;
-        if (Array.isArray(data.petfinder.pet.breeds.breed)) {
+        if (Array.isArray(pet.breeds.breed)) {
           breed = pet.breeds.breed.join(", ");
         } else {
           breed = pet.breeds.breed;
@@ -50,7 +77,7 @@ class Details extends React.Component {
       });
   }
 
-  render() {
+  public render() {
     if (this.state.loading) {
       return <h1>loading...</h1>;
     }
