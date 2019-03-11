@@ -1,27 +1,41 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Action } from "redux";
+import { ThunkAction } from "redux-thunk";
 import { ANIMALS } from "petfinder-client";
-import changeLocation from "./actionCreators/changeLocation";
+import changeCity from "./actionCreators/changeCity";
 import changeAnimal from "./actionCreators/changeAnimal";
 import changeBreed from "./actionCreators/changeBreed";
 import getBreeds from "./actionCreators/getBreeds";
+import { State } from "./reducers";
 
-class SearchBox extends React.Component {
-  handleFormSubmit = event => {
+interface Props {
+  city: string;
+  animal: string;
+  breed: string;
+  breeds: string[];
+  search: () => void;
+  handleCityChange?: () => void;
+  handleAnimalChange?: () => void;
+  handleBreedChange?: () => void;
+}
+
+class SearchBox extends React.Component<Props> {
+  public handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     this.props.search();
   };
-  render() {
+  public render() {
     return (
       <div className="search-params">
         <form onSubmit={this.handleFormSubmit}>
-          <label htmlFor="location">
-            Location
+          <label htmlFor="city">
+            City
             <input
-              id="location"
-              value={this.props.location}
-              placeholder="Location"
-              onChange={this.props.handleLocationChange}
+              id="city"
+              value={this.props.city}
+              placeholder="City, State"
+              onChange={this.props.handleCityChange}
             />
           </label>
           <label htmlFor="animal">
@@ -64,22 +78,26 @@ class SearchBox extends React.Component {
   }
 }
 
-const mapStateToProps = ({ location, animal, breed, breeds }) => ({
-  location,
+const mapStateToProps = ({ city, animal, breed, breeds }: Props) => ({
+  city,
   animal,
   breed,
   breeds
 });
 
-const mapDispatchToProps = dispatch => ({
-  handleLocationChange(event) {
-    dispatch(changeLocation(event.target.value));
+const mapDispatchToProps = (
+  dispatch: (
+    action: Action<string> | ThunkAction<void, State, undefined, Action<string>>
+  ) => void
+) => ({
+  handleCityChange(event: React.ChangeEvent<HTMLInputElement>) {
+    dispatch(changeCity(event.target.value));
   },
-  handleAnimalChange(event) {
+  handleAnimalChange(event: React.ChangeEvent<HTMLSelectElement>) {
     dispatch(changeAnimal(event.target.value));
     dispatch(getBreeds());
   },
-  handleBreedChange(event) {
+  handleBreedChange(event: React.ChangeEvent<HTMLSelectElement>) {
     dispatch(changeBreed(event.target.value));
   }
 });

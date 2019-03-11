@@ -15,7 +15,7 @@ const LoadableDetails = Loadable({
 });
 
 class App extends React.Component {
-  render() {
+  public render() {
     return (
       <div>
         <NavBar />

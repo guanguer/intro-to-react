@@ -1,5 +1,7 @@
 import express from "express";
-import React from "react";
+import compression from "compression";
+import { Request, Response } from "express-serve-static-core";
+import React, { ReactElement } from "react";
 import { renderToNodeStream } from "react-dom/server";
 import { ServerLocation } from "@reach/router";
 import fs from "fs";
@@ -12,10 +14,11 @@ const parts = html.split("Not Rendered");
 
 const app = express();
 
+app.use(compression());
 app.use("/", express.static("./dist"));
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
   res.write(parts[0]);
-  const reactMarkup = (
+  const reactMarkup: ReactElement = (
     <ServerLocation url={req.url}>
       <App />
     </ServerLocation>
